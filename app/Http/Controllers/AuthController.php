@@ -3,61 +3,75 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    // TAMPILAN
-    public function showLogin() {
-        return view('auth.login');
-    }
 
-    public function showRegister() {
-        return view('auth.register');
-    }
+// ======================
+// REGISTER
+// ======================
+public function register(Request $request)
+{
+$request->validate([
+'name'=>'required',
+'email'=>'required|email|unique:users',
+'password'=>'required|min:4'
+]);
 
-    // REGISTER
-    public function register(Request $request) {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-            'role' => 'required'
-        ]);
+User::create([
+'name'=>$request->name,
+'email'=>$request->email,
+'password'=>Hash::make($request->password),
+'role'=>'anggota' // default anggota
+]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role
-        ]);
+return redirect()->route('login')
+->with('success','Akun berhasil dibuat');
+}
 
-        return redirect('/login')->with('success', 'Register berhasil!');
-    }
 
-    // LOGIN
-    public function login(Request $request) {
-        if (Auth::attempt($request->only('email','password'))) {
+// ======================
+// LOGIN
+// ======================
+public function login(Request $request)
+{
+$credentials = [
+'name'=>$request->name,
+'password'=>$request->password
+];
 
-            $user = Auth::user();
+if(Auth::attempt($credentials)){
 
-            if ($user->role == 'anggota') {
-                return redirect('/anggota');
-            } elseif ($user->role == 'petugas') {
-                return redirect('/petugas');
-            } else {
-                return redirect('/kepala');
-            }
-        }
+$user = Auth::user();
 
-        return back()->with('error','Login gagal!');
-    }
+if($user->role == 'anggota'){
+return redirect('/anggota/dashboard');
+}
 
-    // LOGOUT
-    public function logout() {
-        Auth::logout();
-        return redirect('/login');
-    }
+if($user->role == 'petugas'){
+return redirect('/petugas/dashboard');
+}
+
+if($user->role == 'kepala'){
+return redirect('/kepala/dashboard');
+}
+
+}
+
+return back()->with('error','Login gagal');
+}
+
+
+// ======================
+// LOGOUT
+// ======================
+public function logout()
+{
+Auth::logout();
+return redirect('/login');
+}
+
 }

@@ -1,17 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard Kepala</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+@extends('layouts.kepala')
 
-<div class="container mt-5">
-    <h2>Dashboard Kepala Perpustakaan</h2>
-    <p>Selamat datang, {{ auth()->user()->name }}</p>
+@section('title','Dashboard Kepala')
 
-    <a href="/logout" class="btn btn-danger">Logout</a>
+@section('content')
+
+<div class="cards">
+
+<div class="card card-blue">
+Total Petugas
+<h2>5</h2>
 </div>
 
-</body>
-</html>
+<div class="card card-green">
+Total Peminjaman
+<h2>20</h2>
+</div>
+
+<div class="card card-orange">
+Total Buku
+<h2>50</h2>
+</div>
+
+</div>
+
+<div class="table-box">
+<h3>Peminjaman Terbaru</h3>
+
+<table>
+<tr>
+<th>Nama</th>
+<th>Buku</th>
+<th>Tanggal</th>
+<th>Status</th>
+</tr>
+
+<tr>
+<td>Ahmad</td>
+<td>Laravel Dasar</td>
+<td>10-04-2026</td>
+<td>Dipinjam</td>
+</tr>
+
+</table>
+
+</div>
+
+@endsection

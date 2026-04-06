@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Register</title>
+<title>Register</title>
 
-    <!-- Font Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
 
@@ -46,8 +45,7 @@ margin-bottom:5px;
 font-size:14px;
 }
 
-.form-group input,
-.form-group select{
+.form-group input{
 width:100%;
 padding:10px;
 border-radius:8px;
@@ -95,7 +93,7 @@ font-weight:500;
 @csrf
 
 <div class="form-group">
-<label>Nama</label>
+<label>Username</label>
 <input type="text" name="name" required>
 </div>
 
@@ -109,16 +107,7 @@ font-weight:500;
 <input type="password" name="password" required>
 </div>
 
-<div class="form-group">
-<label>Role</label>
-<select name="role">
-<option value="anggota">Anggota</option>
-<option value="petugas">Petugas</option>
-<option value="kepala">Kepala Perpustakaan</option>
-</select>
-</div>
-
-<button class="btn-register">Register</button>
+<button class="btn-register">Create Account</button>
 
 </form>
 
@@ -129,5 +118,4 @@ Sudah punya akun? <a href="/login">Login</a>
 </div>
 
 </body>
-
 </html>

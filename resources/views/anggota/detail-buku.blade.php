@@ -2,22 +2,17 @@
 
 @section('content')
 
-<div style="background:white;padding:20px;border-radius:10px;">
+<h2>{{ $buku->judul }}</h2>
 
-<h2>Detail Buku</h2>
+<img src="{{ asset('storage/'.$buku->gambar) }}" width="200">
 
-<img src="/images/buku1.jpg" width="200">
+<p>Pengarang : {{ $buku->pengarang }}</p>
+<p>Penerbit : {{ $buku->penerbit }}</p>
+<p>Kategori : {{ $buku->kategori }}</p>
+<p>Stok : {{ $buku->stok }}</p>
 
-<h3>Laravel Untuk Pemula</h3>
-
-<p>
-Buku ini membahas dasar dasar Laravel untuk pemula
-</p>
-
-<a href="{{route('anggota.pinjam',1)}}">
-<button>Pinjam Buku</button>
+<a href="{{ route('anggota.pinjam',$buku->id) }}" class="pinjam-btn">
+Pinjam Buku
 </a>
-
-</div>
 
 @endsection

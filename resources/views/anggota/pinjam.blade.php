@@ -2,30 +2,32 @@
 
 @section('content')
 
-<div style="background:white;padding:20px;border-radius:10px;">
+<h2>Pinjam Buku</h2>
 
-<h2>Form Pinjam Buku</h2>
+<form method="POST" action="{{route('anggota.pinjam.store',$buku->id)}}" class="form-pinjam">
 
-<form method="POST">
 @csrf
 
+<input type="hidden" name="buku_id" value="{{ $buku->id }}">
+<input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+
+<label>Nama Peminjam</label>
+<input type="text" value="{{ auth()->user()->name }}" readonly>
+
+<label>Judul Buku</label>
+<input type="text" value="{{ $buku->judul }}" readonly>
+
 <label>Tanggal Pinjam</label>
-<br>
-<input type="date" name="tgl_pinjam" required>
-<br><br>
+<input type="date" name="tanggal_pinjam" required>
 
 <label>Tanggal Kembali</label>
-<br>
-<input type="date" name="tgl_kembali" required>
+<input type="date" name="tanggal_kembali" required>
 
-<br><br>
+<label>Jumlah</label>
+<input type="number" name="jumlah" required>
 
-<button type="submit">
-Pinjam Buku
-</button>
+<button type="submit" class="btn-pinjam">Pinjam Buku</button>
 
 </form>
-
-</div>
 
 @endsection

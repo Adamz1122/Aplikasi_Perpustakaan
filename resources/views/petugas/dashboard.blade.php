@@ -1,17 +1,56 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard Petugas</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+@extends('layouts.petugas')
 
-<div class="container mt-5">
-    <h2>Dashboard Petugas</h2>
-    <p>Selamat datang, {{ auth()->user()->name }}</p>
+@section('title','Dashboard Petugas')
 
-    <a href="/logout" class="btn btn-danger">Logout</a>
+@section('content')
+
+<h3>Selamat Datang, {{ auth()->user()->name }}</h3>
+
+<div class="cards">
+
+<div class="card card-blue">
+Jumlah Buku
+<h2>7</h2>
 </div>
 
-</body>
-</html>
+<div class="card card-green">
+Kategori
+<h2>5</h2>
+</div>
+
+<div class="card card-orange">
+Anggota Saat Ini
+<h2>2</h2>
+</div>
+
+</div>
+
+<div class="table-box">
+
+<h3>Data Peminjaman</h3>
+
+<table>
+
+<tr>
+<th>No</th>
+<th>Nama Anggota</th>
+<th>Judul Buku</th>
+<th>Tgl Kembali</th>
+<th>Status</th>
+<th>Denda</th>
+</tr>
+
+<tr>
+<td>1</td>
+<td>Asep</td>
+<td>Matematika Kalas 10</td>
+<td>27-03-2026</td>
+<td>Terlambat</td>
+<td>5000</td>
+</tr>
+
+</table>
+
+</div>
+
+@endsection

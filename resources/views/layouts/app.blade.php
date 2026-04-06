@@ -106,8 +106,8 @@
                     📖 Buku
                 </a>
 
-                <a href="{{ route('anggota.pinjam') }}">
-                    📚 Buku Dipinjam
+                <a href="{{ route('anggota.peminjaman') }}">
+                📚 Buku Dipinjam
                 </a>
 
                 <a href="{{ route('anggota.riwayat') }}">

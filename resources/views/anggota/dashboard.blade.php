@@ -3,7 +3,7 @@
 @section('title', 'Dashboard Anggota')
 
 @section('content')
-    <h2>Selamat Datang, {{ auth()->user()->name }}</h2>
+    <h2>Selamat Datang, {{ auth()->user()->name }} 👋</h2>
 
     <!-- CARDS INFO -->
     <div class="cards">
@@ -27,7 +27,7 @@
         <ol>
             <li>Waktu maksimal peminjaman 1 minggu</li>
             <li>Setiap anggota hanya dapat meminjam maksimal 3 buku</li>
-            <li>Jika terlambat mengembalikan buku maka dikenakan denda</li>
+            <li>Jika terlambat mengembalikan buku, akan dikenakan denda</li>
         </ol>
     </div>
 @endsection
