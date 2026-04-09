@@ -6,6 +6,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Anggota;
+use App\Models\Petugas;
+use App\Models\Kepala;
 
 class User extends Authenticatable
 {
@@ -46,5 +49,20 @@ class User extends Authenticatable
             'password' => 'hashed',
             'role' => 'string',
         ];
+    }
+
+    public function anggota()
+    {
+        return $this->hasOne(Anggota::class, 'user_id');
+    }
+
+    public function petugas()
+    {
+        return $this->hasOne(Petugas::class, 'user_id');
+    }
+
+    public function kepala()
+    {
+        return $this->hasOne(Kepala::class, 'user_id');
     }
 }

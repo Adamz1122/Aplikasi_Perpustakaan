@@ -4,141 +4,163 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\KepalaController;
+use App\Http\Controllers\PetugasController;
+use App\Http\Controllers\AnggotaController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/anggota', function () {
-    return view('anggota.dashboard');
-})->middleware('role:anggota');
 
-Route::get('/petugas', function () {
-    return view('petugas.dashboard');
-})->middleware('auth','role:petugas')->name('petugas.dashboard');
+// ==============================
+// AUTH
+// ==============================
 
-Route::get('/kepala', function () {
-    return view('kepala.dashboard');
-})->middleware('auth','role:kepala');
-
-Route::post('/logout', function () {
-    Auth::logout();
-    return redirect('/login');
-})->name('logout');
-
-Route::get('/login', function(){
-return view('auth.login');
+Route::get('/login', function () {
+    return view('auth.login');
 })->name('login');
 
-Route::post('/login',[AuthController::class,'login']);
+Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/register', function(){
-return view('auth.register');
+Route::get('/register', function () {
+    return view('auth.register');
 });
 
-Route::post('/register',[AuthController::class,'register']);
+Route::post('/register', [AuthController::class, 'register']);
 
-Route::get('/logout',[AuthController::class,'logout']);
-
-Route::get('/anggota/dashboard', function () {
-    return view('anggota.dashboard');
-})->name('anggota.dashboard');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
-Route::get('/anggota/riwayat', function () {
-    return view('anggota.riwayat');
-})->name('anggota.riwayat');
 
+// ==============================
+// ANGGOTA
+// ==============================
 
-Route::get('/pinjam/{id}', [PeminjamanController::class,'pinjam'])->name('anggota.pinjam');
+Route::middleware(['auth', 'role:anggota'])->prefix('anggota')->group(function () {
 
-Route::post('/pinjam/{id}', [PeminjamanController::class,'store'])->name('anggota.pinjam.store');
+    Route::get('/dashboard', [AnggotaController::class, 'dashboard'])->name('anggota.dashboard');
 
-Route::middleware(['auth'])->group(function () {
+    Route::get('/buku', [AnggotaController::class, 'buku'])->name('anggota.buku');
 
-Route::get('/anggota/buku', [BukuController::class, 'anggota'])->name('anggota.buku');
+    Route::get('/detail/{id}', [AnggotaController::class, 'detail'])->name('anggota.detail-buku');
 
-Route::get('/anggota/buku/{id}', [BukuController::class, 'detail'])->name('anggota.detail-buku');
+    // =====================
+    // PEMINJAMAN
+    // =====================
+    Route::get('/pinjam/{id}', [PeminjamanController::class, 'pinjam'])->name('anggota.pinjam');
 
-Route::get('/anggota/pinjam/{id}', [BukuController::class, 'pinjam'])->name('anggota.pinjam');
+    Route::post('/pinjam', [PeminjamanController::class, 'store'])->name('anggota.pinjam.store');
 
-Route::post('/anggota/pinjam/{id}', [BukuController::class, 'store'])->name('anggota.pinjam.store');
+    // ✅ GANTI index → peminjaman
+    Route::get('/peminjaman', [PeminjamanController::class, 'peminjaman'])->name('anggota.peminjaman');
 
-Route::get('/anggota/peminjaman', [PeminjamanController::class,'index'])
-->name('anggota.peminjaman');
+    // ✅ GANTI kembali → ajukanKembali
+    Route::get('/kembali/{id}', [PeminjamanController::class, 'ajukanKembali'])->name('anggota.kembali');
 
-Route::get('/anggota/kembali/{id}', [PeminjamanController::class,'kembali'])
-->name('anggota.kembali');
+    // =====================
+    // RIWAYAT
+    // =====================
+    Route::get('/riwayat', [PeminjamanController::class, 'riwayat'])->name('anggota.riwayat');
 
-Route::get('/anggota/riwayat',[PeminjamanController::class,'riwayat'])
-->name('anggota.riwayat');
-
-Route::get('/anggota/riwayat/hapus/{id}',
-[PeminjamanController::class,'hapusRiwayat'])
-->name('anggota.riwayat.hapus');
+    Route::delete('/riwayat/{id}', [PeminjamanController::class, 'hapusRiwayat'])->name('anggota.riwayat.hapus');
 
 });
 
+// ==============================
+// PETUGAS
+// ==============================
 
-Route::middleware(['auth','role:petugas'])->group(function(){
+Route::prefix('petugas')->middleware(['auth', 'role:petugas'])->group(function () {
 
-Route::get('/petugas/buku',[BukuController::class,'index'])->name('petugas.buku');
+    // Dashboard
+    Route::get('/dashboard', [PetugasController::class, 'dashboard'])->name('petugas.dashboard');
 
-Route::get('/petugas/buku/create',[BukuController::class,'create'])->name('petugas.create');
+    // Buku CRUD
+    Route::get('/buku', [PetugasController::class, 'buku'])->name('petugas.buku');
 
-Route::post('/petugas/buku/store',[BukuController::class,'storeBuku'])->name('petugas.store');
+    Route::get('/buku/create', [PetugasController::class, 'createBuku'])->name('petugas.buku.create');
 
-Route::get('/petugas/buku/edit/{id}',[BukuController::class,'edit'])->name('petugas.edit');
+    Route::post('/buku/store', [PetugasController::class, 'storeBuku'])->name('petugas.buku.store');
 
-Route::post('/petugas/buku/update/{id}',[BukuController::class,'update'])->name('petugas.update');
+    Route::get('/buku/edit/{id}', [PetugasController::class, 'editBuku'])->name('petugas.buku.edit');
 
-Route::get('/petugas/buku/delete/{id}',[BukuController::class,'destroy'])->name('petugas.delete');
+    Route::post('/buku/update/{id}', [PetugasController::class, 'updateBuku'])->name('petugas.buku.update');
+
+    Route::get('/buku/delete/{id}', [PetugasController::class, 'deleteBuku'])->name('petugas.buku.delete');
+
+    // CRUD Anggota
+    Route::get('/anggota', [PetugasController::class, 'anggota'])->name('petugas.anggota');
+
+    Route::get('/anggota/create', [PetugasController::class, 'createAnggota'])->name('petugas.anggota.create');
+
+    Route::post('/anggota/store', [PetugasController::class, 'storeAnggota'])->name('petugas.anggota.store');
+
+    Route::get('/anggota/edit/{id}', [PetugasController::class, 'editAnggota'])->name('petugas.anggota.edit');
+
+    Route::post('/anggota/update/{id}', [PetugasController::class, 'updateAnggota'])->name('petugas.anggota.update');
+
+    Route::get('/anggota/delete/{id}', [PetugasController::class, 'deleteAnggota'])->name('petugas.anggota.delete');
+
+
+    // AKTIVITAS PETUGAS
+    Route::get('/aktivitas', [PetugasController::class, 'aktivitas'])->name('petugas.aktivitas');
+
+    Route::get('/peminjaman/terima/{id}', [PetugasController::class, 'terimaPinjam'])->name('petugas.terima.pinjam');
+
+    Route::get('/peminjaman/tolak/{id}', [PetugasController::class, 'tolakPinjam'])->name('petugas.tolak.pinjam');
+
+    Route::get('/pengembalian/konfirmasi/{id}', [PetugasController::class, 'konfirmasiKembali'])->name('petugas.konfirmasi.kembali');
+
+
+    // Riwayat
+    Route::get('/riwayat', [PetugasController::class, 'riwayat'])->name('petugas.riwayat');
 
 });
 
-Route::middleware(['auth','role:petugas'])->group(function(){
 
-Route::get('/petugas/dashboard', function () {
-    return view('petugas.dashboard');
-})->name('petugas.dashboard');
 
-Route::get('/petugas/buku/index', function () {
-    return view('petugas.buku.index');
-})->name('petugas.buku');
+// ==============================
+// KEPALA
+// ==============================
 
-Route::get('/petugas/anggota', function () {
-    return view('petugas.anggota');
-})->name('petugas.anggota');
+Route::prefix('kepala')->middleware(['auth', 'role:kepala'])->group(function () {
 
-Route::get('/petugas/riwayat', function () {
-    return view('petugas.riwayat');
-})->name('petugas.riwayat');
+    Route::get('/dashboard', [KepalaController::class, 'dashboard'])->name('kepala.dashboard');
 
-Route::get('/petugas/peminjaman', function () {
-    return view('petugas.peminjaman');
-})->name('petugas.peminjaman');
 
-Route::get('/petugas/pengembalian', function () {
-    return view('petugas.pengembalian');
-})->name('petugas.pengembalian');
+    // Petugas CRUD
+    Route::get('/petugas', [KepalaController::class, 'petugas'])->name('kepala.petugas');
+
+    Route::get('/petugas/create', [KepalaController::class, 'createPetugas'])->name('kepala.petugas.create');
+
+    Route::post('/petugas/store', [KepalaController::class, 'storePetugas'])->name('kepala.petugas.store');
+
+    Route::get('/petugas/edit/{id}', [KepalaController::class, 'editPetugas'])->name('kepala.petugas.edit');
+
+    Route::post('/petugas/update/{id}', [KepalaController::class, 'updatePetugas'])->name('kepala.petugas.update');
+
+    Route::get('/petugas/delete/{id}', [KepalaController::class, 'deletePetugas'])->name('kepala.petugas.delete');
+
+
+    // Peminjaman
+    Route::get('/peminjaman', [KepalaController::class, 'peminjaman'])->name('kepala.peminjaman');
+
+
+    // Laporan
+    Route::get('/laporan', [KepalaController::class, 'laporan'])->name('kepala.laporan');
+
+    Route::get('/laporan/pdf', [KepalaController::class, 'laporanPdf'])->name('kepala.laporan.pdf');
+
 });
 
-Route::middleware(['auth','role:kepala'])->group(function(){
+Route::middleware('auth')->group(function () {
 
-Route::get('/dashboard', function(){
-    return view('kepala.dashboard');
-})->name('kepala.dashboard');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 
-Route::get('/petugas', function(){
-    return view('kepala.petugas');
-})->name('kepala.petugas');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
 
-Route::get('/peminjaman', function(){
-    return view('kepala.peminjaman');
-})->name('kepala.peminjaman');
-
-Route::get('/laporan', function(){
-    return view('kepala.laporan');
-})->name('kepala.laporan');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 
 });

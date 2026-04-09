@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>@yield('title', 'Dashboard Kepala')</title>
+    <title>@yield('title', 'Dashboard Anggota')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Tailwind -->
@@ -22,7 +22,6 @@
             }
         }
     </script>
-
 </head>
 
 <body class="bg-gradient-to-br from-gray-100 to-gray-200 font-poppins">
@@ -31,52 +30,54 @@
     <aside class="fixed top-0 left-0 w-64 h-screen bg-[#7b4b2a] text-white flex flex-col justify-between p-5 shadow-2xl">
 
         <div>
-            <!-- Logo -->
+
+            <!-- LOGO -->
             <div class="text-center font-semibold text-xl mb-10 tracking-wide">
                 📚 Perpustakaan
             </div>
 
-            <!-- Menu -->
+            <!-- MENU -->
             <nav class="space-y-3 text-sm">
 
-                <a href="{{ route('kepala.dashboard') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-300
-                    {{ request()->routeIs('kepala.dashboard') ? 'bg-white text-[#7b4b2a] font-semibold shadow' : 'hover:bg-[#a86b45]' }}">
+                <a href="{{ route('anggota.dashboard') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition
+                    {{ request()->routeIs('anggota.dashboard') ? 'bg-white text-[#7b4b2a] font-semibold shadow' : 'hover:bg-[#a86b45]' }}">
                     🏠 <span>Dashboard</span>
                 </a>
 
-                <a href="{{ route('kepala.petugas') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-300
-                    {{ request()->routeIs('kepala.petugas') ? 'bg-white text-[#7b4b2a] font-semibold shadow' : 'hover:bg-[#a86b45]' }}">
-                    👨‍💼 <span>Data Petugas</span>
+                <a href="{{ route('anggota.buku') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition
+                    {{ request()->routeIs('anggota.buku') ? 'bg-white text-[#7b4b2a] font-semibold shadow' : 'hover:bg-[#a86b45]' }}">
+                    📖 <span>Buku</span>
                 </a>
 
-                <a href="{{ route('kepala.peminjaman') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-300
-                    {{ request()->routeIs('kepala.peminjaman') ? 'bg-white text-[#7b4b2a] font-semibold shadow' : 'hover:bg-[#a86b45]' }}">
-                    📚 <span>Data Peminjaman</span>
+                <a href="{{ route('anggota.peminjaman') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition
+                    {{ request()->routeIs('anggota.peminjaman') ? 'bg-white text-[#7b4b2a] font-semibold shadow' : 'hover:bg-[#a86b45]' }}">
+                    📚 <span>Buku Dipinjam</span>
                 </a>
 
-                <a href="{{ route('kepala.laporan') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-300
-                    {{ request()->routeIs('kepala.laporan') ? 'bg-white text-[#7b4b2a] font-semibold shadow' : 'hover:bg-[#a86b45]' }}">
-                    📊 <span>Laporan</span>
+                <a href="{{ route('anggota.riwayat') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition
+                    {{ request()->routeIs('anggota.riwayat') ? 'bg-white text-[#7b4b2a] font-semibold shadow' : 'hover:bg-[#a86b45]' }}">
+                    🕒 <span>Riwayat</span>
                 </a>
 
                 <a href="{{ route('profile') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-300
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition
                     {{ request()->routeIs('profile') ? 'bg-white text-[#7b4b2a] font-semibold shadow' : 'hover:bg-[#a86b45]' }}">
-                    🕒 <span>Profile</span>
+                    👤 <span>Profile</span>
                 </a>
 
             </nav>
+
         </div>
 
-        <!-- Logout -->
+        <!-- LOGOUT -->
         <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button
-                class="w-full bg-red-500 hover:bg-red-600 transition duration-300 py-2 rounded-xl font-semibold shadow">
+                class="w-full bg-red-500 hover:bg-red-600 transition py-2 rounded-xl font-semibold shadow">
                 🔌 Logout
             </button>
         </form>
@@ -94,7 +95,7 @@
                     @yield('title')
                 </h1>
                 <p class="text-sm text-gray-500">
-                    Dashboard Kepala Perpustakaan 📊
+                    Selamat datang di perpustakaan 📚
                 </p>
             </div>
 
@@ -105,10 +106,10 @@
                     🔔
                 </div>
 
-                <!-- User -->
+                <!-- USER -->
                 <div class="flex items-center gap-3 bg-white px-4 py-2 rounded-xl shadow">
                     <div class="w-8 h-8 bg-[#7b4b2a] text-white flex items-center justify-center rounded-full text-sm">
-                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                        {{ strtoupper(substr(auth()->user()->name,0,1)) }}
                     </div>
                     <span class="text-sm font-semibold text-gray-700">
                         {{ auth()->user()->name }}
@@ -119,7 +120,7 @@
 
         </div>
 
-        <!-- CONTENT -->
+        <!-- CONTENT (KOSONG / YIELD) -->
         <div class="bg-white p-6 rounded-2xl shadow-md">
             @yield('content')
         </div>

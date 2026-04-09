@@ -1,210 +1,136 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>@yield('title', 'Dashboard Petugas')</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Dashboard Petugas')</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-body {
-margin: 0;
-font-family: Arial, sans-serif;
-display: flex;
-background: #f5f5f5;
-}
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
-/* SIDEBAR */
-.sidebar {
-width: 250px;
-background: #7b4b2a;
-color: white;
-height: 100vh;
-display: flex;
-flex-direction: column;
-justify-content: space-between;
-padding: 20px;
-}
-
-.logo {
-font-weight: bold;
-font-size: 18px;
-margin-bottom: 30px;
-text-align: center;
-}
-
-.menu a {
-display: block;
-color: white;
-text-decoration: none;
-padding: 12px;
-margin-bottom: 10px;
-border-radius: 8px;
-transition: 0.3s;
-}
-
-.menu a:hover {
-background: #a86b45;
-}
-
-.active {
-background: #a86b45;
-}
-
-/* Logout */
-.logout-btn {
-background: #ff4d4f;
-border: none;
-color: white;
-cursor: pointer;
-padding: 10px;
-width: 100%;
-border-radius: 8px;
-font-weight: bold;
-}
-
-.logout-btn:hover {
-background: #e33f3f;
-}
-
-/* MAIN */
-.main {
-flex: 1;
-padding: 20px;
-}
-
-.topbar {
-display: flex;
-justify-content: space-between;
-margin-bottom: 20px;
-}
-
-.user {
-font-weight: bold;
-}
-
-/* Card */
-.cards{
-display:flex;
-gap:20px;
-margin-bottom:20px;
-}
-
-.card{
-flex:1;
-padding:20px;
-border-radius:10px;
-color:white;
-}
-
-.card-blue{
-background:#4e8dd1;
-}
-
-.card-green{
-background:#3cc7a7;
-}
-
-.card-orange{
-background:#f39c4a;
-}
-
-.card h2{
-margin-top:10px;
-}
-
-/* Table */
-.table-box{
-background:white;
-padding:20px;
-border-radius:10px;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-}
-
-table th, table td{
-padding:10px;
-border:1px solid #ddd;
-}
-
-</style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
 
 </head>
 
-<body>
+<body class="bg-gradient-to-br from-gray-100 to-gray-200 font-poppins">
 
-<!-- Sidebar -->
-<div class="sidebar">
+    <!-- SIDEBAR (FIXED) -->
+    <aside class="fixed top-0 left-0 w-64 h-screen bg-[#7b4b2a] text-white flex flex-col justify-between p-5 shadow-2xl">
 
-<div>
+        <div>
+            <!-- Logo -->
+            <div class="text-center font-semibold text-xl mb-10 tracking-wide">
+                📚 Perpustakaan
+            </div>
 
-<div class="logo">
-📚 Perpustakaan Digital
-</div>
+            <!-- Menu -->
+            <nav class="space-y-3 text-sm">
 
-<div class="menu">
+                <a href="{{ route('petugas.dashboard') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-300
+                    {{ request()->routeIs('petugas.dashboard') ? 'bg-white text-[#7b4b2a] font-semibold shadow' : 'hover:bg-[#a86b45]' }}">
+                    🏠 <span>Dashboard</span>
+                </a>
 
-<div class="menu">
+                <a href="{{ route('petugas.buku') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-300
+                    {{ request()->routeIs('petugas.buku') ? 'bg-white text-[#7b4b2a] font-semibold shadow' : 'hover:bg-[#a86b45]' }}">
+                    📖 <span>Buku</span>
+                </a>
 
-<a href="{{ route('petugas.dashboard') }}">
-🏠 Dashboard
-</a>
+                <a href="{{ route('petugas.anggota') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-300
+                    {{ request()->routeIs('petugas.anggota') ? 'bg-white text-[#7b4b2a] font-semibold shadow' : 'hover:bg-[#a86b45]' }}">
+                    👥 <span>Anggota</span>
+                </a>
 
-<a href="{{ route('petugas.buku') }}">
-📖 Buku
-</a>
+                <a href="{{ route('petugas.aktivitas') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-300
+                    {{ request()->routeIs('petugas.aktivitas') ? 'bg-white text-[#7b4b2a] font-semibold shadow' : 'hover:bg-[#a86b45]' }}">
+                    📊 <span>Aktivitas</span>
+                </a>
 
-<a href="{{ route('petugas.anggota') }}">
-👥 Anggota
-</a>
+                <a href="{{ route('petugas.riwayat') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-300
+                    {{ request()->routeIs('petugas.riwayat') ? 'bg-white text-[#7b4b2a] font-semibold shadow' : 'hover:bg-[#a86b45]' }}">
+                    🕒 <span>Riwayat</span>
+                </a>
 
-<a href="{{ route('petugas.riwayat') }}">
-🕒 Riwayat
-</a>
+                <a href="{{ route('profile') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-300
+                    {{ request()->routeIs('profile') ? 'bg-white text-[#7b4b2a] font-semibold shadow' : 'hover:bg-[#a86b45]' }}">
+                    🕒 <span>Profile</span>
+                </a>
 
-<a href="{{ route('petugas.peminjaman') }}">
-📚 Peminjaman Buku
-</a>
+            </nav>
+        </div>
 
-<a href="{{ route('petugas.pengembalian') }}">
-🔄 Pengembalian Buku
-</a>
+        <!-- Logout -->
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button
+                class="w-full bg-red-500 hover:bg-red-600 transition duration-300 py-2 rounded-xl font-semibold shadow">
+                🔌 Logout
+            </button>
+        </form>
 
-</div>
+    </aside>
 
-</div>
+    <!-- MAIN -->
+    <main class="ml-64 p-6 min-h-screen">
 
-</div>
+        <!-- TOPBAR -->
+        <div class="flex justify-between items-center mb-8">
 
-<form action="{{ route('logout') }}" method="POST">
-@csrf
-<button class="logout-btn">
-🔌 Logout
-</button>
-</form>
+            <div>
+                <h1 class="text-2xl font-semibold text-gray-700">
+                    @yield('title')
+                </h1>
+                <p class="text-sm text-gray-500">
+                    Selamat datang kembali 👋
+                </p>
+            </div>
 
-</div>
+            <div class="flex items-center gap-4">
 
-<!-- Main -->
-<div class="main">
+                <!-- Notif -->
+                <div class="bg-white p-3 rounded-full shadow hover:scale-105 transition cursor-pointer">
+                    🔔
+                </div>
 
-<div class="topbar">
+                <!-- User -->
+                <div class="flex items-center gap-3 bg-white px-4 py-2 rounded-xl shadow">
+                    <div class="w-8 h-8 bg-[#7b4b2a] text-white flex items-center justify-center rounded-full text-sm">
+                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                    </div>
+                    <span class="text-sm font-semibold text-gray-700">
+                        {{ auth()->user()->name }}
+                    </span>
+                </div>
 
-<div>
-@yield('title')
-</div>
+            </div>
 
-<div class="user">
-👤 {{ auth()->user()->name }}
-</div>
+        </div>
 
-</div>
+        <!-- CONTENT -->
+        <div class="bg-white p-6 rounded-2xl shadow-md">
+            @yield('content')
+        </div>
 
-@yield('content')
-
-</div>
+    </main>
 
 </body>
 

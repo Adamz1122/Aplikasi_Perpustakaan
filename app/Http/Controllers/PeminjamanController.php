@@ -6,87 +6,162 @@ use Illuminate\Http\Request;
 use App\Models\Peminjaman;
 use App\Models\Buku;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class PeminjamanController extends Controller
 {
+
+    public function peminjaman()
+    {
+        $peminjaman = Peminjaman::where('user_id', Auth::id())
+            ->whereIn('status', [
+                'menunggu',
+                'dipinjam',
+                'menunggu_kembali'
+            ])
+            ->with('buku')
+            ->latest()
+            ->get();
+
+        return view('anggota.peminjaman', compact('peminjaman'));
+    }
+    // =====================
+    // FORM PINJAM
+    // =====================
     public function pinjam($id)
     {
         $buku = Buku::findOrFail($id);
         return view('anggota.pinjam', compact('buku'));
     }
 
-    public function store(Request $request, $id)
+    // =====================
+    // SIMPAN PINJAMAN (STATUS: MENUNGGU)
+    // =====================
+    public function store(Request $request)
     {
-        $buku = Buku::findOrFail($id);
+        $request->validate([
+            'id_buku' => 'required',
+            'tanggal_kembali' => 'required|date',
+            'jumlah' => 'required|integer|min:1|max:3',
+        ]);
+
+        $tanggalPinjam = Carbon::today();
+        $tanggalKembali = Carbon::parse($request->tanggal_kembali);
+
+        // 🔴 RULE 1: maksimal 7 hari
+        if ($tanggalKembali->diffInDays($tanggalPinjam) > 7) {
+            return back()->with('error', 'Maksimal peminjaman hanya 7 hari!');
+        }
+
+        // 🔴 RULE 2: jumlah maksimal 3
+        if ($request->jumlah > 3) {
+            return back()->with('error', 'Maksimal peminjaman buku adalah 3!');
+        }
 
         Peminjaman::create([
-            'id_user' => auth()->id(),
-            'id_buku' => $id,
-            'tanggal_pinjam' => $request->tanggal_pinjam,
-            'tanggal_kembali' => $request->tanggal_kembali,
+            'id_buku' => $request->id_buku,
+            'user_id' => Auth::id(),
+            'tanggal_pinjam' => $tanggalPinjam,
+            'tanggal_kembali' => $tanggalKembali,
             'jumlah' => $request->jumlah,
+
+            // 🔥 FIX UTAMA
+            'status' => 'menunggu'
+        ]);
+
+        return redirect()->route('anggota.dashboard')
+            ->with('success', 'Pengajuan berhasil, menunggu persetujuan petugas!');
+    }
+
+    // =====================
+    // PETUGAS: SETUJUI PINJAMAN
+    // =====================
+    public function setujui($id)
+    {
+        $peminjaman = Peminjaman::findOrFail($id);
+
+        $peminjaman->update([
             'status' => 'dipinjam'
         ]);
 
-        // Kurangi stok
-        $buku->stok -= $request->jumlah;
-        $buku->save();
-
-        return redirect()->route('anggota.buku')
-        ->with('success','Buku berhasil dipinjam');
-
-
-    }
-        public function index()
-        {
-        $peminjaman = Peminjaman::where('id_user', auth()->id())
-        ->where('status','dipinjam')
-        ->with('buku')
-        ->get();
-
-        return view('anggota.peminjaman', compact('peminjaman'));
+        return back()->with('success', 'Peminjaman disetujui');
     }
 
-public function kembali($id)
-{
-$peminjaman = Peminjaman::findOrFail($id);
+    // =====================
+    // PETUGAS: TOLAK PINJAMAN
+    // =====================
+    public function tolak($id)
+    {
+        $peminjaman = Peminjaman::findOrFail($id);
 
-$buku = Buku::find($peminjaman->id_buku);
+        $peminjaman->update([
+            'status' => 'ditolak'
+        ]);
 
-$tgl_kembali = Carbon::parse($peminjaman->tanggal_kembali);
-$hari_ini = Carbon::now();
+        return back()->with('success', 'Peminjaman ditolak');
+    }
 
-$denda = 0;
+    // =====================
+    // AJUKAN PENGEMBALIAN (ANGGOTA)
+    // =====================
+    public function ajukanKembali($id)
+    {
+        $peminjaman = Peminjaman::findOrFail($id);
 
-if($hari_ini > $tgl_kembali){
-$terlambat = $tgl_kembali->diffInDays($hari_ini);
-$denda = $terlambat * 1000;
-}
+        $peminjaman->update([
+            'status' => 'menunggu_kembali'
+        ]);
 
-$peminjaman->denda = $denda;
-$peminjaman->status = 'dikembalikan';
-$peminjaman->save();
+        return back()->with('success', 'Menunggu konfirmasi pengembalian');
+    }
 
-$buku->stok += $peminjaman->jumlah;
-$buku->save();
+    // =====================
+    // PETUGAS: KONFIRMASI PENGEMBALIAN + HITUNG DENDA
+    // =====================
+    public function kembali($id)
+    {
+        $peminjaman = Peminjaman::findOrFail($id);
 
-return redirect()->back()->with('success','Buku dikembalikan');
-}
+        $hariIni = Carbon::today();
+        $jatuhTempo = Carbon::parse($peminjaman->tanggal_kembali);
 
-public function riwayat()
-{
-    $riwayat = Peminjaman::where('id_user', auth()->id())
-    ->where('status','dikembalikan')
-    ->with('buku')
-    ->get();
+        $denda = 0;
 
-    return view('anggota.riwayat', compact('riwayat'));
-}
+        // 🔴 hitung denda jika telat
+        if ($hariIni->gt($jatuhTempo)) {
+            $telatHari = $hariIni->diffInDays($jatuhTempo);
+            $denda = $telatHari * 1000;
+        }
 
-public function hapusRiwayat($id)
-{
-    Peminjaman::findOrFail($id)->delete();
+        $peminjaman->update([
+            'status' => 'dikembalikan',
+            'tanggal_dikembalikan' => $hariIni,
+            'denda' => $denda,
+        ]);
 
-    return redirect()->back()->with('success','Riwayat dihapus');
-}
+        return back()->with('success', 'Buku dikembalikan. Denda: Rp ' . number_format($denda));
+    }
+
+    // =====================
+    // RIWAYAT
+    // =====================
+    public function riwayat()
+    {
+        $riwayat = Peminjaman::where('user_id', Auth::id())
+            ->whereIn('status', ['dikembalikan', 'ditolak'])
+            ->with('buku')
+            ->get();
+
+        return view('anggota.riwayat', compact('riwayat'));
+    }
+
+    // =====================
+    // HAPUS RIWAYAT
+    // =====================
+    public function hapusRiwayat($id)
+    {
+        Peminjaman::findOrFail($id)->delete();
+
+        return back()->with('success', 'Riwayat dihapus');
+    }
 }

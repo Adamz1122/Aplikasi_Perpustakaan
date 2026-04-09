@@ -6,7 +6,7 @@
 
 <h2>Tambah Buku</h2>
 
-<form method="POST" action="{{ route('petugas.store') }}" enctype="multipart/form-data">
+<form method="POST" action="{{ route('petugas.buku.store') }}" enctype="multipart/form-data">
 @csrf
 
 <label>Judul</label>

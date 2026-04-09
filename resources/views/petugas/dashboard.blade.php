@@ -1,55 +1,75 @@
 @extends('layouts.petugas')
 
-@section('title','Dashboard Petugas')
+@section('title', 'Dashboard Petugas')
 
 @section('content')
 
-<h3>Selamat Datang, {{ auth()->user()->name }}</h3>
+<div class="p-6">
 
-<div class="cards">
+    <h3 class="text-2xl font-bold mb-6">
+        Selamat Datang, {{ auth()->user()->name }}
+    </h3>
 
-<div class="card card-blue">
-Jumlah Buku
-<h2>7</h2>
-</div>
+    <!-- Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
-<div class="card card-green">
-Kategori
-<h2>5</h2>
-</div>
+        <div class="bg-red-500 text-white p-6 rounded-2xl shadow-lg">
+            <p class="text-lg">Jumlah Buku</p>
+            <h2 class="text-3xl font-bold">{{ $jumlahBuku ?? 0 }}</h2>
+        </div>
 
-<div class="card card-orange">
-Anggota Saat Ini
-<h2>2</h2>
-</div>
+        <div class="bg-green-500 text-white p-6 rounded-2xl shadow-lg">
+            <p class="text-lg">Buku Dipinjam</p>
+            <h2 class="text-3xl font-bold">{{ $jumlahDipinjam ?? 0 }}</h2>
+        </div>
 
-</div>
+        <div class="bg-orange-500 text-white p-6 rounded-2xl shadow-lg">
+            <p class="text-lg">Jumlah Anggota</p>
+            <h2 class="text-3xl font-bold">{{ $jumlahAnggota ?? 0 }}</h2>
+        </div>
 
-<div class="table-box">
+    </div>
 
-<h3>Data Peminjaman</h3>
+    <!-- Table -->
+    <h3 class="text-xl font-semibold mb-4">Data Peminjaman</h3>
 
-<table>
+    <div class="overflow-x-auto bg-white rounded-2xl shadow">
+        <table class="min-w-full text-sm text-left">
 
-<tr>
-<th>No</th>
-<th>Nama Anggota</th>
-<th>Judul Buku</th>
-<th>Tgl Kembali</th>
-<th>Status</th>
-<th>Denda</th>
-</tr>
+            <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+                <tr>
+                    <th class="px-6 py-3">No</th>
+                    <th class="px-6 py-3">Nama Anggota</th>
+                    <th class="px-6 py-3">Judul Buku</th>
+                    <th class="px-6 py-3">Tgl Kembali</th>
+                    <th class="px-6 py-3">Status</th>
+                </tr>
+            </thead>
 
-<tr>
-<td>1</td>
-<td>Asep</td>
-<td>Matematika Kalas 10</td>
-<td>27-03-2026</td>
-<td>Terlambat</td>
-<td>5000</td>
-</tr>
+            <tbody class="divide-y">
+                @foreach ($peminjaman as $p)
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">{{ $loop->iteration }}</td>
+                    <td class="px-6 py-4">{{ $p->user->name ?? '-' }}</td>
+                    <td class="px-6 py-4">{{ $p->buku->judul ?? '-' }}</td>
+                    <td class="px-6 py-4">{{ $p->tanggal_kembali }}</td>
+                    <td class="px-6 py-4">
+                        <span class="
+                            px-3 py-1 rounded-full text-white text-xs
+                            @if($p->status == 'dipinjam') bg-blue-500
+                            @elseif($p->status == 'dikembalikan') bg-green-500
+                            @else bg-gray-500
+                            @endif
+                        ">
+                            {{ $p->status }}
+                        </span>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
 
-</table>
+        </table>
+    </div>
 
 </div>
 

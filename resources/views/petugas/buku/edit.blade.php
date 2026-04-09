@@ -6,7 +6,7 @@
 
 <h2>Edit Buku</h2>
 
-<form method="POST" action="{{ route('petugas.update',$buku->id) }}" enctype="multipart/form-data">
+<form method="POST" action="{{ route('petugas.buku.update',$buku->id) }}" enctype="multipart/form-data">
 @csrf
 
 <label>Judul</label>

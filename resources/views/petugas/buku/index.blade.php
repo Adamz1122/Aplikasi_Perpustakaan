@@ -4,7 +4,7 @@
 
 @section('content')
 
-<a href="{{ route('petugas.create') }}" 
+<a href="{{ route('petugas.buku.create') }}"
 style="background:#7b4b2a;color:white;padding:10px 15px;border-radius:8px;text-decoration:none;">
 + Tambah Buku
 </a>
@@ -46,12 +46,12 @@ style="background:#7b4b2a;color:white;padding:10px 15px;border-radius:8px;text-d
 </td>
 
 <td>
-<a href="{{ route('petugas.edit',$item->id) }}"
+<a href="{{ route('petugas.buku.edit',$item->id) }}"
 style="background:orange;color:white;padding:5px 10px;border-radius:5px;text-decoration:none;">
 Edit
 </a>
 
-<a href="{{ route('petugas.delete',$item->id) }}"
+<a href="{{ route('petugas.buku.delete',$item->id) }}"
 style="background:red;color:white;padding:5px 10px;border-radius:5px;text-decoration:none;"
 onclick="return confirm('Yakin hapus buku?')">
 Hapus

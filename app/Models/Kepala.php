@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Kepala extends Model
+{
+    protected $table = 'kepalas';
+
+    protected $fillable = [
+        'user_id',
+        'jenis_kelamin',
+        'alamat',
+        'foto'
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+}

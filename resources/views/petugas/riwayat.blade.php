@@ -1,37 +1,45 @@
-@extends('layouts.kepala')
+@extends('layouts.petugas')
 
-@section('title','Data Peminjaman')
+@section('title','Riwayat')
 
 @section('content')
 
 <div class="table-box">
 
-<h3>Data Peminjaman</h3>
+<h3>Riwayat Peminjaman</h3>
 
 <table>
 
 <tr>
 <th>No</th>
 <th>Nama</th>
-<th>Buku</th>
+<th>Judul</th>
 <th>Tanggal Pinjam</th>
 <th>Tanggal Kembali</th>
+<th>Jumlah</th>
 <th>Status</th>
-<th>Denda</th>
 </tr>
 
 @foreach($peminjaman as $p)
+
 <tr>
+
 <td>{{ $loop->iteration }}</td>
+
 <td>{{ $p->user->name ?? '-' }}</td>
+
 <td>{{ $p->buku->judul ?? '-' }}</td>
+
 <td>{{ $p->tanggal_pinjam }}</td>
-<td>{{ $p->tanggal_kembali ?? '-' }}</td>
+
+<td>{{ $p->tanggal_kembali }}</td>
+
+<td>{{ $p->jumlah }}</td>
+
 <td>{{ $p->status }}</td>
-<td>
-Rp {{ number_format($p->denda ?? 0,0,',','.') }}
-</td>
+
 </tr>
+
 @endforeach
 
 </table>

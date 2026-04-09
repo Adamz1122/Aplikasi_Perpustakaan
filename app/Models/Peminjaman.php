@@ -11,7 +11,7 @@ class Peminjaman extends Model
     protected $table = 'peminjaman';
 
     protected $fillable = [
-        'id_user',
+        'user_id',
         'id_buku',
         'tanggal_pinjam',
         'tanggal_kembali',
@@ -21,7 +21,14 @@ class Peminjaman extends Model
     ];
 
     public function buku()
-{
-    return $this->belongsTo(Buku::class,'id_buku');
+    {
+        return $this->belongsTo(Buku::class,'id_buku');
+    }
+
+    // TAMBAHKAN INI
+    public function user()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
 }
-}
+
